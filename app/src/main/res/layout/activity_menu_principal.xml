@@ -25,6 +25,13 @@
                 android:layout_gravity="right"
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/btn_reg_us"></Button>
+            <Button
+                android:id="@+id/btn_ejercicio"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_marginHorizontal="16dp"
+                android:text="Rutina de ejercicios"></Button>
         </LinearLayout>
     </ScrollView>
 

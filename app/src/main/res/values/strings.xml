@@ -7,6 +7,7 @@
     <string name="hint_contrasenia">Digite su contraseña</string>
     <string name="btn_login">Iniciar sesion</string>
     <string name="btn_reg_us">Registrar Usuario (Camara)</string>
+    <string name="btn_ejercicio">Rutina de ejercicios</string>
     <string name="reg_usuarios">Registro de usuarios</string>
     <string name="usuario_nuevo">Registre nuevo usuario</string>
     <string name="htn_nuevo_usuario">Digite nombre de usuario</string>
