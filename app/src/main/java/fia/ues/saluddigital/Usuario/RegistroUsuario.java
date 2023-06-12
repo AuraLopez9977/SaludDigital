@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import fia.ues.saluddigital.R;
+import fia.ues.saluddigital.RutinaEjercicios.EjercicioVideo;
 
 public class RegistroUsuario extends AppCompatActivity {
 
@@ -129,6 +130,12 @@ public class RegistroUsuario extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager())!=null){
             startActivityForResult(intent, TAKE_PICTURE);
         }
+
+    }
+
+    private void videorep(){
+        Intent intent = new Intent(RegistroUsuario.this, EjercicioVideo.class);
+       startActivity(intent);
 
     }
 

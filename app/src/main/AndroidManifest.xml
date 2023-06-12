@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+<<<<<<< HEAD
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28"/>
@@ -9,6 +10,10 @@
     <queries>
 
     </queries>
+=======
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+>>>>>>> origin/devCarlosv2
 
     <application
         android:allowBackup="true"
@@ -21,8 +26,18 @@
         android:theme="@style/Theme.SaludDigital"
         tools:targetApi="31">
         <activity
+<<<<<<< HEAD
             android:name=".Usuario.RegistroUsuario"
             android:label="Registro de Usuario"
+=======
+            android:name=".GestionPeso.GraficosPeso"
+            android:exported="false" />
+        <activity
+            android:name=".GestionPeso.GestionPesoMenu"
+            android:exported="false" />
+        <activity
+            android:name=".GestionPeso.RegistrarPeso"
+>>>>>>> origin/devCarlosv2
             android:exported="false" />
         <activity
             android:name=".MainActivity"

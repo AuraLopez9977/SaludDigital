@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">Salud Digital</string>
     <string name="usuario">Usuario</string>
     <string name="hint_usuario">Digite su usuario</string>
@@ -11,4 +12,17 @@
     <string name="htn_nuevo_usuario">Digite nombre de usuario</string>
     <string name="reg_ux">Registrar usuario</string>
     <string name="foto_perfil">Subir foto de perfil</string>
+
+    <string name="registra_tu_peso">Registra tu peso</string>
+    <string name="fecha_de_registro">Fecha de Registro</string>
+    <string name="tu_peso">Tu Peso</string>
+    <string name="unidad_de_medida">Unidad de medida</string>
+    <string name="control_de_peso_corporal">Control de peso corporal</string>
+    <string name="grafica">Grafica</string>
+    <string name="mira_el_grafico_de_tu_progres">Mira el grafico de tu progres</string>
+    <string name="disponible">Disponible</string>
+    <string name="registar">Registar</string>
+    <string name="ejercicios">Rutina de ejercicios</string>
+    <string name="video">Videos de ejercicios</string>
+
 </resources>

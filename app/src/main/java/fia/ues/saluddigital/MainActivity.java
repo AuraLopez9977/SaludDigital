@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import fia.ues.saluddigital.Usuario.RegistroUsuario;
 
+import fia.ues.saluddigital.GestionPeso.GestionPesoMenu;
+
 public class MainActivity extends AppCompatActivity {
 
     Button btn_reg_us;
@@ -26,5 +28,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(regUx);
             }
         });
+
+        try {
+            Intent intent = new Intent(MainActivity.this, GestionPesoMenu.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+
     }
+}
+
 }
