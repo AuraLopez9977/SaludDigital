@@ -24,6 +24,7 @@ public class Menu_principal extends AppCompatActivity {
                 startActivity(registrarUs);
             }
         });
+        
         btn_ejercicios = findViewById(R.id.btn_ejercicio);
         btn_ejercicios.setOnClickListener(new View.OnClickListener() {
             @Override
