@@ -7,6 +7,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import fia.ues.saluddigital.Usuario.Usuario;
@@ -70,10 +72,10 @@ public class BD_Control {
         return null;
     }
 
-    public Usuario getUsuarioById(String id) {
+    public Usuario getUsuarioById(String nombre) {
         usuarios = selectUsuarios();
         for (Usuario us : usuarios) {
-            if (us.getId() == id) {
+            if (us.getNombre() == nombre) {
                 return us;
             }
         }
@@ -87,7 +89,7 @@ public class BD_Control {
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 Usuario usuario = new Usuario();
-                usuario.setId(cursor.getString(0));
+                usuario.setId(cursor.getInt(0));
                 usuario.setNombre(cursor.getString(1));
                 usuario.setContrasenia(cursor.getString(2));
                 lista_usuarios.add(usuario);
@@ -113,16 +115,16 @@ public class BD_Control {
     public String insertar(Usuario usuario) {
         String regInsertador = "Registro insertado #";
         long contador = 0;
-        ContentValues us = new ContentValues();
-        us.put("id", usuario.getId());
-        us.put("nombre", usuario.getNombre());
-        us.put("clave", usuario.getContrasenia());
-        contador = db.insert("Usuario", null, us);
-        if (contador == 1 || contador == 0) {
-            regInsertador = "Error al insertar el registro, Registro duplicado. Verificar Inserción";
-        } else {
-            regInsertador = regInsertador + contador;
-        }
+            ContentValues us = new ContentValues();
+            us.put("id", usuario.getId());
+            us.put("nombre", usuario.getNombre());
+            us.put("clave", usuario.getContrasenia());
+            contador = db.insert("Usuario", null, us);
+            if (contador == 1 || contador == 0) {
+                regInsertador = "Error al insertar el registro, Registro duplicado. Verificar Inserción";
+            } else {
+                regInsertador = regInsertador + contador;
+            }
         return regInsertador;
     }
 
@@ -131,7 +133,7 @@ public class BD_Control {
         Cursor cursor = db.query("Usuario", camposUsuario, "id = ?", id_usuario, null, null, null);
         if (cursor.moveToFirst()) {
             Usuario usuario = new Usuario();
-            usuario.setId(cursor.getString(0));
+            usuario.setId(cursor.getInt(0));
             usuario.setNombre(cursor.getString(1));
             usuario.setContrasenia(cursor.getString(2));
             return usuario;
@@ -141,7 +143,7 @@ public class BD_Control {
     }
 
     public String actualizar(Usuario usuario) {
-        String[] id = {usuario.getId()};
+        String[] id = {String.valueOf(usuario.getId())};
         ContentValues cv = new ContentValues();
         cv.put("nombre", usuario.getNombre());
         cv.put("clave", usuario.getContrasenia());
@@ -154,6 +156,24 @@ public class BD_Control {
         int contador = 0;
         db.delete("Usuario", "id = " + usuario.getId() + "", null);
         return regAfectados;
+    }
+
+    public int cantidad_us(){
+        DBHelper = new DatabaseHelper(context);
+        abrir();
+        ArrayList<Usuario> usuarios = new ArrayList<>();
+        Usuario usuario = new Usuario();
+        Cursor cursor = db.rawQuery("SELECT id FROM Usuario", null);
+        if (cursor!=null){
+            if(cursor.moveToFirst()){
+                do {
+                    usuario.setId(cursor.getInt(0));
+                    usuarios.add(usuario);
+                }while (cursor.moveToNext());
+            }cerrar();
+            return usuarios.size();
+        }else
+            return 0;
     }
 
 }

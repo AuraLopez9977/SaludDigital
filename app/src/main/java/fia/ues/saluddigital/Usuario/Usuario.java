@@ -2,7 +2,7 @@ package fia.ues.saluddigital.Usuario;
 
 public class Usuario {
 
-    String id;
+    int id;
     String nombre;
     String email;
     String contrasenia;
@@ -10,24 +10,24 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String id, String nombre, String email, String contrasenia) {
+    public Usuario(int id, String nombre, String email, String contrasenia) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.contrasenia = contrasenia;
     }
 
-    public Usuario(String id, String nombre, String contrasenia) {
+    public Usuario(int id, String nombre, String contrasenia) {
         this.id = id;
         this.nombre = nombre;
         this.contrasenia = contrasenia;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

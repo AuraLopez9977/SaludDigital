@@ -31,6 +31,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -40,17 +41,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import fia.ues.saluddigital.BD_Control.BD_Control;
+import fia.ues.saluddigital.MainActivity;
 import fia.ues.saluddigital.R;
 import fia.ues.saluddigital.RutinaEjercicios.EjercicioVideo;
 
 public class RegistroUsuario extends AppCompatActivity {
 
+    BD_Control bd_control;
+    EditText txtUsuario, txtContrasenia;
+    int id = 0;
+    String path = "";
     Button btn_cargar_img, btn_crear_usuario;
-    private final String carpeta_Raiz ="saludDigital/";
-    private final String ruta_img=carpeta_Raiz+"fotos";
-    String path ="";
-    final int COD_SELECCIONA = 10;
-    final int COD_FOTO = 20;
     private static final int REQUES_PERMISSION_CAMERA = 100;
     private static final int TAKE_PICTURE = 100;
     private static final int REQUEST_PERMISSION_WRITE_STORAGE = 100;
@@ -66,6 +68,9 @@ public class RegistroUsuario extends AppCompatActivity {
         btn_cargar_img = findViewById(R.id.btn_foto_perfil);
         btn_crear_usuario = findViewById(R.id.btn_regUx);
         fotoPerfil = findViewById(R.id.fotPerfil);
+        txtUsuario = findViewById(R.id.txt_usuario);
+        txtContrasenia = findViewById(R.id.txt_contra);
+        bd_control = new BD_Control(this);
 
         btn_cargar_img.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,25 +82,34 @@ public class RegistroUsuario extends AppCompatActivity {
         btn_crear_usuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //imagen
                 checkPermissionStorage();
+                //datos de usuario
+               // crearUsuario();
+                //Regresar();
+
             }
         });
-
-       /* if (validarPermisos()){
-            btn_cargar_img.setEnabled(true);
-        }else {
-            btn_cargar_img.setEnabled(false);
-        }
-
-        btn_cargar_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cargarImg();
-            }
-        });*/
     }
+
+    private void Regresar() {
+        Intent intent = new Intent(RegistroUsuario.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void crearUsuario() {
+        int id = bd_control.cantidad_us();
+        Usuario usuario = new Usuario();
+        usuario.setId(id);
+        usuario.setNombre(txtUsuario.getText().toString());
+        usuario.setContrasenia(txtUsuario.getText().toString());
+        bd_control.abrir();
+        bd_control.insertar(usuario);
+        //System.out.println("********************************************************"+path);
+        bd_control.cerrar();
+
+    }
+
     private void checkPermissionCamera() {
 
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
@@ -155,6 +169,8 @@ public class RegistroUsuario extends AppCompatActivity {
 
             Uri collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
             Uri imageUri = resolver.insert(collection, values);
+           // path = imageUri.toString()+"/Telefono/Pictures/saludDigital/"+fileName.toString();
+          //  System.out.println("////////////////////////"+imageUri.toString());
 
             try {
                 fos = resolver.openOutputStream(imageUri);
@@ -169,6 +185,7 @@ public class RegistroUsuario extends AppCompatActivity {
             String imageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
             String fileName = System.currentTimeMillis()+".jpg";
             file = new File(imageDir, fileName);
+            path = imageDir+fileName;
             try {
                 fos = new FileOutputStream(file);
             }catch (FileNotFoundException e){
@@ -178,7 +195,7 @@ public class RegistroUsuario extends AppCompatActivity {
 
         boolean saved = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         if (saved) {
-            Toast.makeText(this, "La imagen se ha guardado exitosamente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "El usuario se ha creado exitosamente", Toast.LENGTH_SHORT).show();
         }
 
         if (fos !=null){
@@ -218,148 +235,4 @@ public class RegistroUsuario extends AppCompatActivity {
             }
         }
     }
-
-    /* private boolean validarPermisos() {
-
-        if (Build.VERSION.SDK_INT< Build.VERSION_CODES.M){
-            return true;
-        }if ((checkSelfPermission(CAMERA)== PackageManager.PERMISSION_GRANTED)&&(checkSelfPermission(WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED)&&checkSelfPermission(READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
-            return true;
-        }if ((shouldShowRequestPermissionRationale(CAMERA))||(shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE))||(shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE))){
-            cargarDialogoRecomendacion();
-        }else {
-            requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, CAMERA,READ_EXTERNAL_STORAGE}, 100);
-        }
-        return false;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100){
-            if (grantResults.length==2 && grantResults[0]==PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager.PERMISSION_GRANTED){
-                btn_cargar_img.setEnabled(true);
-            }else {
-                solicitarPermisosManual();
-            }
-        }
-    }
-
-    private void solicitarPermisosManual() {
-        final CharSequence[] opciones = {"Si", "No"};
-        final AlertDialog.Builder alertOpciones = new AlertDialog.Builder(RegistroUsuario.this);
-        alertOpciones.setTitle("¿Desea configurar los permisos de forma manual?");
-        alertOpciones.setItems(opciones, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if(opciones[which].equals("Si")){
-                    Intent config = new Intent();
-                    config.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    config.setData(uri);
-                    startActivity(config);
-                }else{
-                    Toast.makeText(getApplicationContext(), "Los permisos no fueron aceptados", Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                }
-            }
-        });
-        alertOpciones.show();
-    }
-
-    private void cargarDialogoRecomendacion() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(RegistroUsuario.this);
-        dialog.setTitle("Permisos Desactivados");
-        dialog.setMessage("Debe aceptar los permisos para el correcto funcionamiento de la APP");
-        dialog.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, 100);
-            }
-        });
-        dialog.show();
-    }
-
-    private void cargarImg(){
-        final CharSequence[] opciones = {"Tomar foto","Cargar Imagen", "Cancelar"};
-        final AlertDialog.Builder alertOpciones = new AlertDialog.Builder(RegistroUsuario.this);
-        alertOpciones.setTitle("Seleccione una opcion");
-        alertOpciones.setItems(opciones, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if(opciones[which].equals("Tomar foto")){
-                    tomarFoto();
-                }else{
-                    if (opciones[which].equals("Cargar Imagen")){
-                        Intent cargar = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        cargar.setType("image/");
-                        startActivityForResult(cargar.createChooser(cargar,"Seleccione la aplicacion"), COD_SELECCIONA);
-                    }else {
-                        dialog.dismiss();
-                    }
-                }
-            }
-        });
-        alertOpciones.show();
-     }
-
-
-    private void tomarFoto(){
-        File fileImagen = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), ruta_img);
-        boolean isCreateImg = fileImagen.exists();
-        String nombreImg = "";
-        if (isCreateImg == true){
-            isCreateImg = fileImagen.mkdirs();
-        }
-        if (isCreateImg == false){
-            nombreImg = (System.currentTimeMillis()/1000)+".jpg";
-        }
-        path = Environment.getExternalStorageDirectory()+File.separator+ruta_img+File.separator+nombreImg;
-        System.out.println(path);
-        File img = new File(path);
-        //Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        //camera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(img));
-        //camera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(createImageFile()));
-        //startActivityForResult(camera, COD_FOTO);
-
-        Intent tomar = null;
-        tomar = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.N){
-            String authorities = getApplicationContext().getPackageName()+".provider";
-            Uri imageUri = FileProvider.getUriForFile(this, authorities, img);
-            tomar.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        }else{
-            tomar.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(img));
-        }
-        startActivityForResult(tomar, COD_FOTO);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK){
-            switch (requestCode){
-                case COD_FOTO:
-                    MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.MediaScannerConnectionClient() {
-                        @Override
-                        public void onMediaScannerConnected() {
-                        }
-
-                        @Override
-                        public void onScanCompleted(String path, Uri uri) {
-                            Log.i("Ruta de almacenamiento", "Path: "+path);
-                        }
-                    });
-                    Bitmap bitmap = BitmapFactory.decodeFile(path);
-                    fotoPerfil.setImageBitmap(bitmap);
-                    break;
-                case COD_SELECCIONA:
-                    Uri mipath = data.getData();
-                    fotoPerfil.setImageURI(mipath);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }*/
 }
